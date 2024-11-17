@@ -1,6 +1,9 @@
 #include"mcu.h"
 #include<stdint.h>
 
+
+static uint32_t _SYSCLK;
+
 void STM32f103c8::configure_gpio(gpio_t* g, uint8_t pin, uint32_t flags)const
 {
 	gpio_init(g, pin, flags);
@@ -35,31 +38,51 @@ void STM32f103c8::write_pin(gpio_t* g, uint8_t pin, bool level)const
 	gpio_write(g, pin, level);
 }
 
-void pll_config(rcc_t* rcc) {
-	//rcc->CR &= CLEAR_MASK(24);
-	//rcc->CFGR |= SET_MASK(18);
-	//rcc->CFGR |= SET_MASK(19);
-	rcc->CFGR |= SET_MASK(20);
-	//rcc->CFGR &= CLEAR_MASK(21);
-	//rcc->CFGR &= CLEAR_MASK(17);
-	rcc->CFGR |= SET_MASK(16);
+void pll_config(rcc_t* rcc, uint8_t mul, bool useHSE) {
+	mul -= 2;
+	if(mul & SET_MASK(0))
+		rcc->CFGR |= SET_MASK(18);
+	if (mul & SET_MASK(1))
+		rcc->CFGR |= SET_MASK(19);
+	if (mul & SET_MASK(2))
+		rcc->CFGR |= SET_MASK(20);
+	if (mul & SET_MASK(3))
+		rcc->CFGR |= SET_MASK(21);
+
+	if(useHSE)
+		rcc->CFGR |= SET_MASK(16);
 }
 
-void clock_init_72MHz(rcc_t* rcc) {
-	rcc->CR |= SET_MASK(16);//HSE ON
-	while (!(rcc->CR | SET_MASK(17)));//HSE READY
-	pll_config(rcc);
+void clock_init(rcc_t* rcc, uint32_t mhz) {
+	bool useHSE = false;
+	uint8_t pll_mul = 0;
+	if (mhz < 8000000 || mzh > 72000000) {
+		_SYSCLK = 8000000;
+		return;
+	}
+	else if(mhz < (4000000 * 9)) {
+		pll_mul = mhz / 4000000;
+		_SYSCLK = pll_mul * 4000000;
+	}
+	else {
+		useHSE = true;
+		pll_mul = mhz / 8000000;
+		_SYSCLK = pll_mul * 8000000;
+	}
+
+	if (useHSE) {
+		rcc->CR |= SET_MASK(16);//HSE ON
+		while (!(rcc->CR | SET_MASK(17)));//HSE READY
+	}
+	
+	pll_config(rcc, pll_mul, useHSE);
 	rcc->CR |= SET_MASK(24);//PLL ON
 	while (!(rcc->CR | SET_MASK(25)));//PLL READY
 	
-
-
-	//rcc->CFGR &= CLEAR_MASK(1);
 	rcc->CFGR |= SET_MASK(1);
-	
 }
 
-const STM32f103c8* STM32f103c8::get()
+const STM32f103c8* STM32f103c8::get(uint32_t mhz)
 {
 	static STM32f103c8 mcu;
 	static bool initialized = false;
@@ -73,8 +96,13 @@ const STM32f103c8* STM32f103c8::get()
 		mcu.uart2 = reinterpret_cast<uart_t*>(0x40004400);
 		mcu.uart3 = reinterpret_cast<uart_t*>(0x40004800);
 
-		clock_init_72MHz(mcu.rcc);
+		clock_init(mcu.rcc, mhz);
 		initialized = true;
 	}
 	return &mcu;
+}
+
+uint32_t STM32f103c8::SYSCLK() const
+{
+	return _SYSCLK;
 }
