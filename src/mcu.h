@@ -6,7 +6,9 @@
 #include"uart.h"
 #include"def.h"
 
-
+//Clock Sources
+//HSI=8MHz, HSE=4-16MHz, PLL
+//
 struct STM32f103c8 {
 	void configure_gpio(gpio_t*, uint8_t pin, uint32_t flags)const;
 	void configure_uart(uart_t*, uint32_t baud, usart_config_func, DataBits, StopBit)const;

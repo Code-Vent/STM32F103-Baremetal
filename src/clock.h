@@ -19,4 +19,4 @@ struct rcc {
 typedef struct rcc rcc_t;
 typedef enum { AHB, APB1, APB2 }clock_sel_t;
 
-void clock_init(rcc_t*);
+//void clock_init(rcc_t*);

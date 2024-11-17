@@ -11,7 +11,7 @@ void usart_write(uart_t* u, char* data)
 			u->DR = *data++;
 		}
 	}
-	while (!(u->SR & SET_MASK(7))); //Transfer not complete
+	while (!(u->SR & SET_MASK(6))); //Transfer not complete
 }
 
 void set_stop_bit(uart_t* u, StopBit s) {
