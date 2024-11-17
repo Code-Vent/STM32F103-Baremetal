@@ -56,18 +56,18 @@ void pll_config(rcc_t* rcc, uint8_t mul, bool useHSE) {
 void clock_init(rcc_t* rcc, uint32_t mhz) {
 	bool useHSE = false;
 	uint8_t pll_mul = 0;
-	if (mhz < 8000000 || mzh > 72000000) {
-		_SYSCLK = 8000000;
+	if (mhz < 8000000u || mhz > 72000000u) {
+		_SYSCLK = 8000000u;
 		return;
 	}
-	else if(mhz < (4000000 * 9)) {
-		pll_mul = mhz / 4000000;
-		_SYSCLK = pll_mul * 4000000;
+	else if(mhz < (4000000u * 9)) {
+		pll_mul = (uint8_t)(mhz / 4000000u);
+		_SYSCLK = pll_mul * 4000000u;
 	}
 	else {
 		useHSE = true;
-		pll_mul = mhz / 8000000;
-		_SYSCLK = pll_mul * 8000000;
+		pll_mul = (uint8_t)(mhz / 8000000u);
+		_SYSCLK = pll_mul * 8000000u;
 	}
 
 	if (useHSE) {
