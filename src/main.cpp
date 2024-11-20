@@ -10,13 +10,9 @@ int main() {
 	
 	for (;;) {
 		s->write_pin(s->gpioc, 13, true);
-		for (uint32_t i = 0; i < 800000; ++i) {
-			__asm__ volatile("nop");
-		}
+		s->delay(1000);
 		s->write_pin(s->gpioc, 13, false);
-		for (uint32_t i = 0; i < 200000; ++i) {
-			__asm__ volatile("nop");
-		}
+		s->delay(1000);
 	}
 	return 0;
 }

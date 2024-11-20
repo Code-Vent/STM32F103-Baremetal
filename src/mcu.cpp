@@ -1,7 +1,6 @@
 #include"mcu.h"
 #include<stdint.h>
 
-
 static uint32_t _SYSCLK;
 
 void STM32f103c8::configure_gpio(gpio_t* g, uint8_t pin, uint32_t flags)const
@@ -82,7 +81,15 @@ void clock_init(rcc_t* rcc, uint32_t mhz) {
 	rcc->CFGR |= SET_MASK(1);
 }
 
-const STM32f103c8* STM32f103c8::get(uint32_t mhz)
+
+extern "C"
+{
+	extern core_t* __core_ptr__;
+}
+
+
+
+const STM32f103c8* STM32f103c8::get(uint32_t mhz, uint32_t tick_unit)
 {
 	static STM32f103c8 mcu;
 	static bool initialized = false;
@@ -96,13 +103,27 @@ const STM32f103c8* STM32f103c8::get(uint32_t mhz)
 		mcu.uart2 = reinterpret_cast<uart_t*>(0x40004400);
 		mcu.uart3 = reinterpret_cast<uart_t*>(0x40004800);
 
+		mcu.core.timer0 = reinterpret_cast<timer_t*>(0xE000E010);
+		mcu.core.nvic0 = reinterpret_cast<nvic_t*>(0xE000E100);
+		mcu.core.nvic1 = reinterpret_cast<nvic_t*>(0xE000EF00);
+		mcu.core.scb0 = reinterpret_cast<scb_t*>(0xE000E008);
+		mcu.core.mpu0 = reinterpret_cast<mpu_t*>(0xE000ED90);
+
+		__core_ptr__ = &mcu.core;
 		clock_init(mcu.rcc, mhz);
+		iCore::tick_init(__core_ptr__, _SYSCLK, tick_unit);
 		initialized = true;
 	}
+	
 	return &mcu;
 }
 
 uint32_t STM32f103c8::SYSCLK() const
 {
 	return _SYSCLK;
+}
+
+void STM32f103c8::delay(uint32_t value) const
+{
+	iCore::delay(__core_ptr__, value);
 }

@@ -14,8 +14,16 @@ add_executable(
  gpio.cpp
  mcu.cpp
  main.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/libcore/core.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/libcore/handlers.c
  ${PROGRAM_START_UP}
 )
+
+#target_link_libraries(
+#	${EXECUTABLE}
+#	PRIVATE
+#	libcore
+#)
 
 set_target_properties(${EXECUTABLE} PROPERTIES SUFFIX ".elf")
 

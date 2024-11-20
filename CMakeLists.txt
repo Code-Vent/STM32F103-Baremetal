@@ -67,6 +67,7 @@ set_property(SOURCE ${PROGRAM_START_UP} APPEND PROPERTY COMPILE_OPTIONS "-x" "as
 #add_subdirectory(thirdparty)
 #add_subdirectory(include)
 add_subdirectory(src)
+add_subdirectory("src/libcore")
 
 #option(BUILD_EXAMPLES "" OFF)
 
