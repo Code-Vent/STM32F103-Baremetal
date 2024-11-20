@@ -10,9 +10,9 @@ int main() {
 	
 	for (;;) {
 		s->write_pin(s->gpioc, 13, true);
-		s->delay(1000);
+		s->delay(500);
 		s->write_pin(s->gpioc, 13, false);
-		s->delay(1000);
+		s->delay(500);
 	}
 	return 0;
 }
