@@ -17,3 +17,7 @@ void iCore::delay(core_t* c, uint32_t value)
 	while ((c->ticks - start) < value) {
 	}
 }
+
+void iCore::user_mode(core_t* c)
+{
+}

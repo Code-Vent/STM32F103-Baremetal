@@ -3,24 +3,18 @@
 #include"../def.h"
 
 
-typedef struct timer timer_t;
-typedef struct nvic nvic_t;
-typedef struct scb scb_t;
-typedef struct mpu mpu_t;
-
-
-struct timer {
+typedef struct timer {
 	reg_type CTRL;
 	reg_type LOAD;
 	reg_type VAL;
 	reg_type CALIB;
-};
+}timer_t;
 
-struct nvic {
+typedef struct nvic {
 
-};
+}nvic_t;
 
-struct sbc {
+typedef struct scb {
 	reg_type ACTRL[830];
 	reg_type CPUID;
 	reg_type ICSR;
@@ -36,11 +30,18 @@ struct sbc {
 	reg_type HFSR;
 	reg_type MMAR;
 	reg_type BFAR;
-};
+}scb_t;
 
-struct mpu {
+typedef struct mpu {
 
-};
+}mpu_t;
+
+typedef struct syscall {
+	uint32_t id;
+	void* arg1;
+	void* arg2;
+	void* arg3;
+}syscall_t;
 
 typedef struct core {	
 	timer_t* timer0;
@@ -49,6 +50,7 @@ typedef struct core {
 	mpu_t  * mpu0;
 	nvic_t * nvic1;
 	volatile uint32_t ticks;
+	syscall_t svc;
 }core_t;
 
 

@@ -1,4 +1,5 @@
 #include"mcu.h"
+#include"libcore/interface.h"
 #include<stdint.h>
 
 static uint32_t _SYSCLK;
@@ -112,6 +113,7 @@ const STM32f103c8* STM32f103c8::get(uint32_t mhz, uint32_t tick_unit)
 		__core_ptr__ = &mcu.core;
 		clock_init(mcu.rcc, mhz);
 		iCore::tick_init(__core_ptr__, _SYSCLK, tick_unit);
+		iCore::user_mode(__core_ptr__);
 		initialized = true;
 	}
 	
