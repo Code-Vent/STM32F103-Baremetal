@@ -1,10 +1,16 @@
-#include"types.h"
 #include"interface.h"
 
+sysfunc iCore::kernel[MAX_SYS_FUNC] = {0};
 
 iCore::iCore(core_t** c, bool p)
 :core(c), priviledged(p)
 {
+}
+
+void iCore::register_sysfunc(sysfunc f, uint32_t svc_num){
+	if(svc_num < MAX_SYS_FUNC){
+		kernel[svc_num] = f;
+	}
 }
 
 void iCore::tick_init(uint32_t clock_freq, uint32_t unit)const
@@ -27,17 +33,13 @@ uint32_t iCore::get_ticks() const{
 
 void iCore::mode(bool privileged) const
 {
-	/*
-	if(privileged){
-		(*core)->scb0->SCR |= SET_MASK(1);
-		(*core)->mpu0->CR |= SET_MASK(0);
-	}else{
-		(*core)->scb0->SCR &= CLEAR_MASK(1);
-		(*core)->mpu0->CR &= CLEAR_MASK(0);
-	}
-		*/
+	
 }
 
 void iCore::syscall_dispatch(uint32_t* args, uint32_t svc_num){
+	if(svc_num < MAX_SYS_FUNC && kernel[svc_num]){
+		kernel[svc_num](args);
+	}else{
 
+	}
 }
