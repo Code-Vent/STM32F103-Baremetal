@@ -7,9 +7,5 @@ void SysTick_Handler() {
 }
 
 void SVC_Handler() {
-	switch (__core_ptr__->svc.id)
-	{
-	default:
-		break;
-	}
+	
 }

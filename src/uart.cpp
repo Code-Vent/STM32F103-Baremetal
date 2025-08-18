@@ -50,7 +50,7 @@ void basic_uart_config(uart_t* u, DataBits d, StopBit s)
 	set_stop_bit(u, s);
 }
 
-void basic_usart_config(uart_t* u, DataBits, StopBit)
+void basic_usart_config(uart_t* u, DataBits d, StopBit s)
 {
 	set_data_bits(u, d);
 	set_stop_bit(u, s);
@@ -59,7 +59,7 @@ void basic_usart_config(uart_t* u, DataBits, StopBit)
 	u->CR2 |= SET_MASK(11);
 }
 
-void usart_hardware_flow_config(uart_t* u, DataBits, StopBit)
+void usart_hardware_flow_config(uart_t* u, DataBits d, StopBit s)
 {
 	set_data_bits(u, d);
 	set_stop_bit(u, s);
