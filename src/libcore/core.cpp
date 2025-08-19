@@ -12,7 +12,7 @@ void iCore::init(uint32_t clock_freq, uint32_t tick_unit)const{
 void iCore::set_mode(uint32_t* args)
 {
 	// Set the mode based on the argument passed
-	mode = 0;//args[0];
+	mode = args[0];
 	if(mode){
 		__asm volatile(
 			"cpsie i\n"
