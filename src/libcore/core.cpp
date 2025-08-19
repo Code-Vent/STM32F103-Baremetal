@@ -1,4 +1,4 @@
-#include"interface.h"
+#include"core.h"
 
 uint32_t iCore::mode;
 

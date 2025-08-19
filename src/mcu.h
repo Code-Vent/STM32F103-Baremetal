@@ -5,7 +5,7 @@
 #include"gpio.h"
 #include"uart.h"
 #include"libcore/types.h"
-#include"libcore/interface.h"
+#include"libcore/core.h"
 #include"def.h"
 
 
