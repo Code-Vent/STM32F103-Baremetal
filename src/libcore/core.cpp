@@ -1,15 +1,45 @@
 #include"interface.h"
 
-sysfunc iCore::kernel[MAX_SYS_FUNC] = {0};
+uint32_t iCore::mode;
 
-iCore::iCore(core_t** c, bool p)
-:core(c), priviledged(p)
+void iCore::init(uint32_t clock_freq, uint32_t tick_unit)const{
+	(*core)->kernel[0] = &iCore::set_mode;
+
+
+	tick_init(clock_freq, tick_unit);
+}
+
+void iCore::set_mode(uint32_t* args)
+{
+	// Set the mode based on the argument passed
+	mode = 0;//args[0];
+	if(mode){
+		__asm volatile(
+			"cpsie i\n"
+			"msr control, %0\n"
+			:
+			: "r"(0x03)
+			: "memory"
+		);
+	}else{
+			__asm volatile(
+			"cpsie i\n"
+			"msr control, %0\n"
+			:
+			: "r"(0x00)
+			: "memory"
+		);
+	}
+}
+
+iCore::iCore(core_t** c)
+:core(c)
 {
 }
 
-void iCore::register_sysfunc(sysfunc f, uint32_t svc_num){
+void iCore::register_sysfunc(sysfunc f, uint32_t svc_num)const{
 	if(svc_num < MAX_SYS_FUNC){
-		kernel[svc_num] = f;
+		(*core)->kernel[svc_num] = f;
 	}
 }
 
@@ -29,17 +59,4 @@ void iCore::delay(uint32_t value)const
 
 uint32_t iCore::get_ticks() const{
 	return (*core)->ticks;
-}
-
-void iCore::mode(bool privileged) const
-{
-	
-}
-
-void iCore::syscall_dispatch(uint32_t* args, uint32_t svc_num){
-	if(svc_num < MAX_SYS_FUNC && kernel[svc_num]){
-		kernel[svc_num](args);
-	}else{
-
-	}
 }

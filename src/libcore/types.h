@@ -68,8 +68,9 @@ typedef struct mpu {
 	reg_type RASR_A3;
 }mpu_t;
 
-typedef void (*syscall)(uint32_t* args, uint32_t svc_num);
 
+typedef void (*sysfunc)(uint32_t* args);
+#define MAX_SYS_FUNC 256
 typedef struct core {	
 	timer_t* timer0;
 	nvic_t * nvic0;
@@ -77,8 +78,9 @@ typedef struct core {
 	mpu_t  * mpu0;
 	nvic_t * nvic1;
 	volatile uint32_t ticks;
-	syscall svc;
+	sysfunc kernel[MAX_SYS_FUNC];
 }core_t;
+
 
 
 
