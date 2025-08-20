@@ -11,12 +11,11 @@ core_t* __core_ptr__;
 	})
 
 
-void syscall_dispatcher(uint32_t* args, uint32_t svc_num){
-	if(svc_num < MAX_SYS_FUNC && __core_ptr__->kernel[svc_num]){
-		__core_ptr__->kernel[svc_num](args);
-	}else{
-
-	}
+void syscall_dispatcher(uint32_t* args) {
+    uint32_t svc_num = args[4];
+    if (svc_num < MAX_SYS_FUNC && __core_ptr__->kernel[svc_num]) {
+        __core_ptr__->kernel[svc_num](args);
+    }
 }
 
 void SysTick_Handler() {
@@ -25,16 +24,13 @@ void SysTick_Handler() {
 
 
 __attribute__((naked)) void SVC_Handler() {
-	
-	__asm volatile(
-		"push {lr}\n"
-		"mrs r0, msp\n"
-		"tst lr, #4\n"
-		"it ne\n"
-		"mrsne r0, psp\n"
-		"ldr r1, [r0, #24]\n"
-		"ldrb r1, [r1, #-2]\n"
-		"bl syscall_dispatcher\n"
-		"pop {pc}\n"
-	);
+    __asm volatile(
+        "push {lr}\n"                // Save return address
+        "mrs r0, msp\n"              // r0 = MSP (main stack pointer)
+        "tst lr, #4\n"               // Test bit 2 of EXC_RETURN to select stack
+        "it ne\n"
+        "mrsne r0, psp\n"            // If not zero, use PSP (process stack pointer)
+        "bl syscall_dispatcher\n"    // Call syscall_dispatcher(args)
+        "pop {pc}\n"                 // Return from exception
+    );
 }

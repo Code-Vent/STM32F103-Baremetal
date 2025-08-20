@@ -25,7 +25,8 @@ enum class DataBits {
 
 typedef void (*usart_config_func)(uart_t* u, DataBits, StopBit);
 
-void usart_write(uart_t* u, char* data);
+void usart_write(uart_t* u, char data);
+char usart_read(uart_t* u);
 
 void basic_uart_config(uart_t* u, DataBits, StopBit);
 void basic_usart_config(uart_t* u, DataBits, StopBit);

@@ -1,17 +1,32 @@
 #include"uart.h"
 
 
-void usart_write(uart_t* u, char* data)
+void usart_write(uart_t* u, char data)
 {
-	//set TE bit in cr1
-	u->CR1 |= SET_MASK(3);
-	while (data) {
-		if (u->SR & SET_MASK(7)) {//Transmitter empty
-			//Write Data
-			u->DR = *data++;
-		}
-	}
-	while (!(u->SR & SET_MASK(6))); //Transfer not complete
+    if (!u) return;
+
+    // Enable transmitter (TE bit in CR1, bit 3)
+    u->CR1 |= SET_MASK(3);
+
+    // Wait until transmit data register is empty (TXE, bit 7 in SR)
+    while (!(u->SR & SET_MASK(7)));
+
+    // Write data to the data register
+    u->DR = data;
+
+    // Wait until transmission is complete (TC, bit 6 in SR)
+    while (!(u->SR & SET_MASK(6)));
+}
+
+char usart_read(uart_t* u)
+{
+    if (!u) return 0;
+
+    // Wait until the receive data register is not empty (RXNE, bit 5 in SR)
+    while (!(u->SR & SET_MASK(5)));
+
+    // Read and return the received data
+    return static_cast<char>(u->DR & 0xFF);
 }
 
 void set_stop_bit(uart_t* u, StopBit s) {

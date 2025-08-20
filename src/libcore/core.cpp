@@ -1,35 +1,65 @@
 #include"core.h"
 
-uint32_t iCore::mode;
+uint32_t iCore::mode = KERNEL_MODE;
 
-void iCore::init(uint32_t clock_freq, uint32_t tick_unit)const{
-	(*core)->kernel[0] = &iCore::set_mode;
+bool iCore::is_privileged()const{
+	return mode == KERNEL_MODE;
+}
+
+void iCore::init(uint32_t clock_freq, uint32_t tick_unit, bool privileged)const{
+	(*core)->kernel[0] = iCore::set_mode;
+	(*core)->kernel[1] = iCore::nvic_config;
+	(*core)->kernel[2] = iCore::mpu_config;
+	(*core)->kernel[3] = iCore::enter_critical;
+	(*core)->kernel[4] = iCore::exit_critical;
 
 
 	tick_init(clock_freq, tick_unit);
+	if(!privileged){
+		set_mode(USER_MODE);
+	}
 }
 
 void iCore::set_mode(uint32_t* args)
 {
-	// Set the mode based on the argument passed
-	mode = args[0];
-	if(mode){
-		__asm volatile(
-			"cpsie i\n"
-			"msr control, %0\n"
-			:
-			: "r"(0x03)
-			: "memory"
-		);
-	}else{
-			__asm volatile(
-			"cpsie i\n"
-			"msr control, %0\n"
-			:
-			: "r"(0x00)
-			: "memory"
-		);
-	}
+    // Set the mode based on the argument passed
+    if(args[0] == KERNEL_MODE){
+        // Switch to privileged mode (CONTROL = 0)
+        __asm volatile(
+            "msr control, %0\n"
+            "isb\n"
+            :
+            : "r"(0x00)
+            : "memory"
+        );
+        mode = KERNEL_MODE;
+    } else if(args[0] == USER_MODE){
+        // Switch to unprivileged mode (CONTROL = 1)
+        __asm volatile(
+            "msr control, %0\n"
+            "isb\n"
+            :
+            : "r"(0x01)
+            : "memory"
+        );
+        mode = USER_MODE;
+    }
+}
+
+void iCore::nvic_config(uint32_t* args) {
+    // TODO: Implement NVIC enable/disable
+}
+
+void iCore::mpu_config(uint32_t* args) {
+    // TODO: Implement MPU region setup
+}
+
+void iCore::enter_critical(uint32_t* args) {
+    // TODO: Implement enter critical section (disable interrupts)
+}
+
+void iCore::exit_critical(uint32_t* args) {
+    // TODO: Implement exit critical section (enable interrupts)
 }
 
 iCore::iCore(core_t** c)

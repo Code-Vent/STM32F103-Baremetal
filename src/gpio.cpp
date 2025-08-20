@@ -11,13 +11,13 @@ struct gpio {
 	reg_type LCKR;
 };
 
-void gpio_init(gpio_t* gpio, uint8_t pin, uint32_t flags) {
+void gpio_init(gpio_t* g, uint8_t pin, uint32_t flags) {
 	reg_type* crlh = nullptr;
 	if (pin < 8) {
-		crlh = &gpio->CRL;
+		crlh = &g->CRL;
 	}
 	else if (pin < 16) {
-		crlh = &gpio->CRH;
+		crlh = &g->CRH;
 		pin -= 8;
 	}
 	else {
@@ -63,10 +63,25 @@ void gpio_init(gpio_t* gpio, uint8_t pin, uint32_t flags) {
 	}
 }
 
-void gpio_write(gpio_t* g_gpio, uint8_t pin, bool l)
+void gpio_write(gpio_t* g, uint8_t pin, bool l)
 {
-	if (l)
-		g_gpio->ODR |= SET_MASK(pin);
-	else
-		g_gpio->ODR &= CLEAR_MASK(pin);
+    if (!g || pin > 15) {
+        return; // Invalid arguments
+    }
+
+    if (l) {
+        // Use BSRR for atomic bit set
+        g->BSRR = (1U << pin);
+    } else {
+        // Use BRR for atomic bit reset
+        g->BRR = (1U << pin);
+    }
+}
+
+bool gpio_read(gpio_t* g, int pin) {
+    if (!g || pin < 0 || pin > 15) {
+        return false; // Invalid arguments
+    }
+    // Return true if the pin is high, false if low
+    return (g->IDR & (1 << pin)) != 0;
 }

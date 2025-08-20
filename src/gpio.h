@@ -16,3 +16,4 @@ typedef struct gpio gpio_t;
 
 void gpio_init(gpio_t*, uint8_t pin, uint32_t flags);
 void gpio_write(gpio_t*, uint8_t pin, bool l);
+bool gpio_read(gpio_t* g, int pin);
