@@ -15,14 +15,14 @@ void iCore::init(uint32_t clock_freq, uint32_t tick_unit, bool privileged)const{
 
 
 	tick_init(clock_freq, tick_unit);
-	uint32_t user_mode = 0;
+	uint32_t user_mode = USER_MODE;
 	if(!privileged){
 		set_mode(&user_mode);
 	}
 }
 
 void iCore::set_mode(uint32_t* args)
-{
+{    
     // Set the mode based on the argument passed
     if(args[0] == KERNEL_MODE){
         // Switch to privileged mode (CONTROL = 0)
@@ -52,7 +52,7 @@ void iCore::nvic_config(uint32_t* args) {
 }
 
 void iCore::mpu_config(uint32_t* args) {
-    // TODO: Implement MPU region setup
+    
 }
 
 void iCore::enter_critical(uint32_t* args) {

@@ -131,25 +131,16 @@ void STM32f103c8::call(
     uint32_t arg2,
     uint32_t arg3) const
 {
-    // Call the system function using SVC instruction
-    __asm volatile (
-    "mov r0, %[a0]\n"
-    "mov r1, %[a1]\n"
-    "mov r2, %[a2]\n"
-    "mov r3, %[a3]\n"
-    "mov r4, %[svcnum]\n"
-    "svc 0\n"
-    :
-    : [a0] "r" (arg0),
-      [a1] "r" (arg1),
-      [a2] "r" (arg2),
-      [a3] "r" (arg3),
-      [svcnum] "r" (svc_num)
-    : "r0", "r1", "r2", "r3", "r4", "memory"
-);
+    core.svc_params.num = svc_num;
+	core.svc_params.args[0] = arg0;
+	core.svc_params.args[1] = arg1;
+	core.svc_params.args[2] = arg2;
+	core.svc_params.args[3] = arg3;
+	__asm volatile("svc 0\n");
 }
 
-const iCore* STM32f103c8::get_core() const{
+const iCore* STM32f103c8::get_core(bool privileged) const{
+	call(0, privileged? KERNEL_MODE : USER_MODE);
 	return &icore;
 }
 

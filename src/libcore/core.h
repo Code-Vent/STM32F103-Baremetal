@@ -2,8 +2,8 @@
 #include<stdint.h>
 #include"types.h"
 
-#define USER_MODE 0
-#define KERNEL_MODE 1
+#define USER_MODE 1
+#define KERNEL_MODE 0
 
 
 class iCore {

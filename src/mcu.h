@@ -13,8 +13,9 @@
 class STM32f103c8 {
 	friend class ElevatePrivilegeLevel;
 	public:
-		static const STM32f103c8* get(uint32_t Hz=8000000, uint32_t tick_unit = 1000);		
-		const iCore* get_core() const;
+		static const STM32f103c8* get(uint32_t Hz=8000000, 
+			uint32_t tick_unit = 1000);		
+		const iCore* get_core(bool privileged = false) const;
 		void configure_gpio(gpio_t*, uint8_t pin, uint32_t flags)const;
 		void configure_uart(uart_t*, uint32_t baud, usart_config_func, 
 			DataBits, StopBit)const;
@@ -34,12 +35,11 @@ class STM32f103c8 {
 		uart_t* uart1;
 		uart_t* uart2;
 		uart_t* uart3;
-	protected:
-		void call(uint32_t svc_num, uint32_t arg0=0, uint32_t arg1=0, uint32_t arg2=0, uint32_t arg3=0)const;
+		void call(uint32_t svc_num, uint32_t arg0, uint32_t arg1=0, uint32_t arg2=0, uint32_t arg3=0)const;
 	private:
 		STM32f103c8(const STM32f103c8&) = delete;
 		STM32f103c8& operator=(const STM32f103c8&) = delete;
-		core_t core;
+		mutable core_t core;
 		iCore  icore;
 		STM32f103c8();
 };
