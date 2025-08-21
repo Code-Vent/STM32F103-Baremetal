@@ -11,6 +11,7 @@
 
 
 class STM32f103c8 {
+	friend class ElevatePrivilegeLevel;
 	public:
 		static const STM32f103c8* get(uint32_t Hz=8000000, uint32_t tick_unit = 1000);		
 		const iCore* get_core() const;
@@ -36,21 +37,8 @@ class STM32f103c8 {
 	protected:
 		void call(uint32_t svc_num, uint32_t arg0=0, uint32_t arg1=0, uint32_t arg2=0, uint32_t arg3=0)const;
 	private:
-	    class ElevatePrivilegeLevel{
-			public:
-				ElevatePrivilegeLevel(const STM32f103c8& m, bool demoteAfter)
-				:mcu(m), should_demote_after(demoteAfter)
-				{
-					m.call(0, KERNEL_MODE);					
-				}
-				~ElevatePrivilegeLevel(){
-					if(should_demote_after)
-						mcu.call(0, USER_MODE);
-				}
-			private:	
-				const STM32f103c8& mcu;
-				const bool should_demote_after;
-		};
+		STM32f103c8(const STM32f103c8&) = delete;
+		STM32f103c8& operator=(const STM32f103c8&) = delete;
 		core_t core;
 		iCore  icore;
 		STM32f103c8();

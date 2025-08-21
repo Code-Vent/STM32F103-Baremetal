@@ -6,6 +6,26 @@ extern "C"
 	extern core_t* __core_ptr__;
 }
 
+class ElevatePrivilegeLevel{
+	public:
+		ElevatePrivilegeLevel(const STM32f103c8& m)
+			:mcu(m), revoke_after(false)
+		{
+			if(!mcu.icore.is_privileged()){
+				// Elevate privilege level to kernel mode
+				m.call(0, KERNEL_MODE);
+				revoke_after = true;
+			}
+		}
+		~ElevatePrivilegeLevel(){
+			if(revoke_after)
+				mcu.call(0, USER_MODE);
+		}
+	private:	
+		const STM32f103c8& mcu;
+		bool revoke_after;
+};
+
 STM32f103c8::STM32f103c8()
 :icore(&__core_ptr__)
 {
@@ -27,7 +47,7 @@ void STM32f103c8::configure_uart(uart_t* u, uint32_t baud, usart_config_func f, 
 
 const STM32f103c8& STM32f103c8::enable_peripheral(uint8_t bit, clock_sel_t clk) const
 {
-	auto e = ElevatePrivilegeLevel(*this, !icore.is_privileged());
+	auto e = ElevatePrivilegeLevel(*this);
 	::clock_enable(rcc, bit, clk);
 	return *this;
 }
