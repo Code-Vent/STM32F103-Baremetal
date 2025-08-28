@@ -52,12 +52,12 @@ void clock_init(rcc_t* rcc, uint32_t mhz) {
 
 	if (useHSE) {
 		rcc->CR |= SET_MASK(16);//HSE ON
-		while (!(rcc->CR | SET_MASK(17)));//HSE READY
+		while (!(rcc->CR & SET_MASK(17)));//HSE READY
 	}
 	
 	pll_config(rcc, pll_mul, useHSE);
 	rcc->CR |= SET_MASK(24);//PLL ON
-	while (!(rcc->CR | SET_MASK(25)));//PLL READY
+	while (!(rcc->CR & SET_MASK(25)));//PLL READY
 	
 	rcc->CFGR |= SET_MASK(1);
 }

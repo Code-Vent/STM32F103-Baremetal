@@ -2,8 +2,8 @@
 #include<stdint.h>
 #include"types.h"
 
-#define USER_MODE 1
-#define KERNEL_MODE 0
+constexpr uint32_t USER_MODE = 1;
+constexpr uint32_t KERNEL_MODE = 0;
 
 
 class iCore {
