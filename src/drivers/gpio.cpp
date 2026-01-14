@@ -1,5 +1,5 @@
 #include"gpio.h"
-#include"def.h"
+#include"../def.h"
 
 struct gpio {
 	reg_type CRL;
@@ -25,7 +25,10 @@ void gpio_init(gpio_t* g, uint8_t pin, uint32_t flags) {
 	}
 
 	uint8_t b0 = 4 * pin;
-	if (flags & CONFIG_PIN_AS_FLOATING_INPUT || flags & CONFIG_PIN_AS_PULLED_INPUT) {
+	if (flags & CONFIG_PIN_AS_FLOATING_INPUT || 
+		flags & CONFIG_PIN_AS_PULLED_INPUT || 
+		flags & CONFIG_PIN_AS_ANALOG_INPUT
+	) {
 		*crlh &= CLEAR_MASK(b0);
 		*crlh &= CLEAR_MASK(b0 + 1);
 		*crlh &= CLEAR_MASK(b0 + 2);
@@ -33,7 +36,7 @@ void gpio_init(gpio_t* g, uint8_t pin, uint32_t flags) {
 		if (flags & CONFIG_PIN_AS_FLOATING_INPUT) {
 			*crlh |= SET_MASK(b0 + 2);
 		}
-		else {
+		else if(flags & CONFIG_PIN_AS_PULLED_INPUT){
 			*crlh |= SET_MASK(b0 + 3);
 		}
 		return;

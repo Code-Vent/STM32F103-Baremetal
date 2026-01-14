@@ -1,19 +1,32 @@
-#include"mcu.h"
+#include"stm32f103/mcu.h"
+#include"apps/pin.h"
+#include"apps/button.h"
 
+void buttonDebouncer(){
+	for(int i = 0; i < 4000; ++i){
+		__asm("nop");
+	}
+}
 
 int main() {	
 	auto s = STM32f103c8::get(48000000, 1000000);
-	
-	s->enable_peripheral(4, clock_sel_t::APB2).configure_gpio(s->gpioc, 13,
-		CONFIG_PIN_AS_MEDIUM_SPEED_OUTPUT |
-		CONFIG_PIN_AS_OPEN_DRAIN);	
-	auto core = s->get_core();
-	
+	OutputPin pin13;
+	PortC::init(s);
+	PortC::mediumSpeedOutput(13, OutputType::OpenDrain, &pin13);
+	InputPin pin7;
+	PortA::init(s);
+	PortA::input(7, InputType::Pulled, &pin7);
+	Button::init(&buttonDebouncer);
+	Button btn(&pin7, PullType::DOWN);
+	auto core = s->get_core();	
+	pin13.digitalWrite(true);
 	for (;;) {
-		s->gpio_write(s->gpioc, 13, true);
-		core->delay(100000);
-		s->gpio_write(s->gpioc, 13, false);
-		core->delay(100000);
+		if(btn.isDown()){
+			pin13.digitalWrite(true);
+			core->delay(100000);
+			pin13.digitalWrite(false);
+			core->delay(100000);
+		}
 	}
 	return 0;
 }

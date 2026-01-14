@@ -31,30 +31,11 @@ STM32f103c8::STM32f103c8()
 {
 }
 
-void STM32f103c8::configure_gpio(gpio_t* g, uint8_t pin, uint32_t flags)const
-{
-	::gpio_init(g, pin, flags);
-}
-
-void STM32f103c8::configure_uart(uart_t* u, uint32_t baud, usart_config_func f, DataBits d, StopBit s) const
-{
-	u->CR1 |= SET_MASK(13);//Enable Uart
-	f(u, d, s);
-	//Set Baud rate
-	//u->BRR = (uint16_t)((72000000 / (16 * baud)));
-	u->BRR = static_cast<uint16_t>(72000000 / (16 * baud));
-}
-
 const STM32f103c8& STM32f103c8::enable_peripheral(uint8_t bit, clock_sel_t clk) const
 {
 	auto e = ElevatePrivilegeLevel(*this);
 	::clock_enable(rcc, bit, clk);
 	return *this;
-}
-
-void STM32f103c8::gpio_write(gpio_t* g, uint8_t pin, bool level)const
-{
-	::gpio_write(g, pin, level);
 }
 
 const STM32f103c8* STM32f103c8::get(uint32_t mhz, uint32_t tick_unit)
@@ -94,10 +75,6 @@ uint32_t STM32f103c8::get_sysclk()const
 // Unprivileged system functions (unchanged)
 uint32_t STM32f103c8::get_tick()const {
     return core.ticks;
-}
-
-bool STM32f103c8::gpio_read(gpio_t* g, int pin) const{
-    return ::gpio_read(g, pin);
 }
 
 int STM32f103c8::uart_send(uart_t* u, const char* data, int len) const {

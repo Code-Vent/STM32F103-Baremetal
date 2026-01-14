@@ -26,23 +26,23 @@ void iCore::set_mode(uint32_t* args)
     // Set the mode based on the argument passed
     if(args[0] == KERNEL_MODE){
         // Switch to privileged mode (CONTROL = 0)
-        __asm volatile(
-            "msr control, %0\n"
-            "isb\n"
-            :
-            : "r"(0x00)
-            : "memory"
-        );
+        //__asm volatile(
+        //    "msr control, %0\n"
+        //    "isb\n"
+        //    :
+        //    : "r"(0x00)
+        //    : "memory"
+        //);
         mode = KERNEL_MODE;
     } else if(args[0] == USER_MODE){
         // Switch to unprivileged mode (CONTROL = 1)
-        __asm volatile(
-            "msr control, %0\n"
-            "isb\n"
-            :
-            : "r"(0x01)
-            : "memory"
-        );
+        //__asm volatile(
+        //    "msr control, %0\n"
+        //    "isb\n"
+        //    :
+        //    : "r"(0x01)
+        //    : "memory"
+        //);
         mode = USER_MODE;
     }
 }

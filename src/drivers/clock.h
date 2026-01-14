@@ -1,6 +1,6 @@
 #pragma once 
 #include<stdint.h>
-#include"def.h"
+#include"../def.h"
 
 
 struct rcc {

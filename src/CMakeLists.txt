@@ -10,10 +10,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(
 	${EXECUTABLE}
- clock.cpp
- gpio.cpp
- mcu.cpp
- main.cpp
+    main.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/apps/pin.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/apps/button.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/drivers/clock.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/drivers/gpio.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/stm32f103/mcu.cpp
  ${CMAKE_CURRENT_SOURCE_DIR}/libcore/core.cpp
  ${CMAKE_CURRENT_SOURCE_DIR}/libcore/handlers.c
  ${PROGRAM_START_UP}

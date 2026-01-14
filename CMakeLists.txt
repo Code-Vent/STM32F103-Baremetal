@@ -1,6 +1,7 @@
+
 cmake_minimum_required(VERSION 3.20)
 
-##include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/toolchain.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/toolchain.cmake)
 
 set(PROJECT_NAME bluepill_firmware)
 
@@ -68,6 +69,9 @@ set_property(SOURCE ${PROGRAM_START_UP} APPEND PROPERTY COMPILE_OPTIONS "-x" "as
 #add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory("src/libcore")
+add_subdirectory("src/drivers")
+add_subdirectory("src/stm32f103")
+add_subdirectory("src/apps")
 
 #option(BUILD_EXAMPLES "" OFF)
 
