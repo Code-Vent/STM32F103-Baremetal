@@ -1,7 +1,20 @@
 #include"clock.h"
-#include"def.h"
+#include"../def.h"
 
 static uint32_t _SYSCLK;
+
+struct rcc {
+	reg_type CR;
+	reg_type CFGR;
+	reg_type CIR;
+	reg_type APB2RSTR;
+	reg_type APB1RSTR;
+	reg_type AHBENR;
+	reg_type APB2ENR;
+	reg_type APB1ENR;
+	reg_type BDCR;
+	reg_type CSR;
+};
 
 void clock_enable(rcc_t* rcc, uint8_t bit, clock_sel_t clk)
 {

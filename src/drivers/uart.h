@@ -1,19 +1,7 @@
 #pragma once
 #include<stdint.h>
-#include"../def.h"
-
-struct uart {
-	reg_type SR;
-	reg_type DR;
-	reg_type BRR;
-	reg_type CR1;
-	reg_type CR2;
-	reg_type CR3;
-	reg_type GTPR;
-};
 
 typedef struct uart uart_t;
-
 
 enum class StopBit {
 	_1, _2
