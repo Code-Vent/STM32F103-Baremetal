@@ -1,7 +1,6 @@
 #include"spi.h"
 #include"../def.h"
 
-
 struct spi {
 	reg_type CR1;
 	reg_type CR2;

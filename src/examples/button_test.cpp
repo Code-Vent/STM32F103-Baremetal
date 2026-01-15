@@ -1,6 +1,6 @@
-#include"stm32f103/mcu.h"
-#include"apps/pin.h"
-#include"apps/button.h"
+#include"../stm32f103/mcu.h"
+#include"../apps/pin.h"
+#include"../apps/button.h"
 
 void buttonDebouncer(){
 	for(int i = 0; i < 4000; ++i){

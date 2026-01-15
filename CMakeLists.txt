@@ -72,6 +72,7 @@ add_subdirectory("src/libcore")
 add_subdirectory("src/drivers")
 add_subdirectory("src/stm32f103")
 add_subdirectory("src/apps")
+add_subdirectory("src/examples")
 
 #option(BUILD_EXAMPLES "" OFF)
 
