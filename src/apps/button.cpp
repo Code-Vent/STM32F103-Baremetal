@@ -11,8 +11,9 @@ Button::Button(InputPin* k, PullType p)
 
 bool Button::isPressed()
 {
+    bool old = pressed;
     scan();
-    return pressed;
+    return !old && pressed;
 }
 
 bool Button::isReleased()
