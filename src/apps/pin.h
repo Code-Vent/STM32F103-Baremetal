@@ -5,7 +5,8 @@
 enum OutputType{
     PushPull = CONFIG_PIN_AS_PUSH_PULL,
     OpenDrain = CONFIG_PIN_AS_OPEN_DRAIN,
-    Alternate = CONFIG_PIN_AS_ALTERNATE_FUNC
+    AlternatePP = CONFIG_PIN_AS_ALTERNATE_FUNC | CONFIG_PIN_AS_PUSH_PULL,
+    AlternateOD = CONFIG_PIN_AS_ALTERNATE_FUNC | CONFIG_PIN_AS_OPEN_DRAIN,
 };
 
 enum InputType{
@@ -25,6 +26,8 @@ struct OutputPin{
 struct InputPin{
     bool digitalRead();
     uint8_t analogRead();
+    void pullUp();
+    void pullDown();
     InputPin() = default;
     gpio_t* port;
     uint8_t num;

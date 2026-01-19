@@ -8,15 +8,19 @@
 #include"../libcore/core.h"
 #include"../def.h"
 
-
+enum TickUnit{
+	ms = 1000,
+	us = 1000000
+};
 
 class STM32f103c8 {
 	friend class ElevatePrivilegeLevel;
 	public:
-		static const STM32f103c8* get(uint32_t Hz=8000000, 
-			uint32_t tick_unit = 1000);		
+		static const STM32f103c8* get(uint32_t freq_Hz=8000000);		
 		const iCore* get_core(bool privileged = false) const;
 		const STM32f103c8& enable_peripheral(uint8_t bit, clock_sel_t)const;	
+		void delay_ms(uint32_t value)const;
+		void delay_us(uint32_t value)const;
 		uint32_t get_tick()const;
 		uint32_t get_sysclk()const;
 		int uart_send(uart_t*, const char* data, int len)const;

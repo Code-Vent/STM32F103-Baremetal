@@ -7,15 +7,16 @@ constexpr uint32_t KERNEL_MODE = 0;
 
 
 class iCore {
+	friend class STM32f103c8;
 	public:
 		iCore(core_t** core);		
-	    void delay(uint32_t value)const;
-		uint32_t get_ticks() const;
-		void register_sysfunc(sysfunc f, uint32_t svc_num)const;
-		void init(uint32_t clock_freq, uint32_t tick_unit, bool privileged=true)const;
+		uint32_t get_ticks() const;		
 		bool is_privileged()const;
 	private:
+		void register_sysfunc(sysfunc f, uint32_t svc_num)const;
+		void init(bool privileged=true)const;
 		void tick_init(uint32_t clock_freq, uint32_t tick_unit)const;
+	 	void delay(uint32_t value)const;
 		// Privileged system functions (sysfunc signature)
 		static void set_mode(uint32_t* args);
 		static void nvic_config(uint32_t* args);

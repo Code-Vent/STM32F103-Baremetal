@@ -6,15 +6,12 @@ bool iCore::is_privileged()const{
 	return mode == KERNEL_MODE;
 }
 
-void iCore::init(uint32_t clock_freq, uint32_t tick_unit, bool privileged)const{
+void iCore::init(bool privileged)const{
 	(*core)->kernel[0] = &iCore::set_mode;
 	(*core)->kernel[1] = &iCore::nvic_config;
 	(*core)->kernel[2] = &iCore::mpu_config;
 	(*core)->kernel[3] = &iCore::enter_critical;
 	(*core)->kernel[4] = &iCore::exit_critical;
-
-
-	tick_init(clock_freq, tick_unit);
 	uint32_t user_mode = USER_MODE;
 	if(!privileged){
 		set_mode(&user_mode);

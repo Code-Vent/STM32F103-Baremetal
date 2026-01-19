@@ -6,6 +6,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(EXAMPLES
     button_test
+    uart_transmitter
+    uart_receiver
 )
 
 foreach(example ${EXAMPLES})
@@ -14,8 +16,10 @@ foreach(example ${EXAMPLES})
         "examples/${example}.cpp"
         ${CMAKE_CURRENT_SOURCE_DIR}/apps/pin.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/apps/button.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/apps/serial.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/drivers/clock.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/drivers/gpio.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/uart.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/stm32f103/mcu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/libcore/core.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/libcore/handlers.c

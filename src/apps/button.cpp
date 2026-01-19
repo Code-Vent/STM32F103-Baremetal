@@ -6,6 +6,11 @@ Button::Button(InputPin* k, PullType p)
 {
     key = k;
     pull = p;
+    if(p == PullType::UP){
+        key->pullUp();
+    }else{
+        key->pullDown();
+    }
     scan();
 }
 

@@ -38,3 +38,13 @@ uint8_t InputPin::analogRead()
 {
     return 0;
 }
+
+void InputPin::pullUp()
+{
+    gpio_write(port, num, true);
+}
+
+void InputPin::pullDown()
+{
+    gpio_write(port, num, false);
+}

@@ -5,5 +5,7 @@ typedef struct rcc rcc_t;
 typedef enum { AHB, APB1, APB2 }clock_sel_t;
 
 void clock_enable(rcc_t* rcc, uint8_t bit, clock_sel_t clk);
-void clock_init(rcc_t* rcc, uint32_t mhz);
+void clock_init(rcc_t* rcc, uint32_t freq_Hz);
+uint32_t clock_apb1_freq();
+uint16_t clock_apb1_prescaler();
 uint32_t clock_freq();

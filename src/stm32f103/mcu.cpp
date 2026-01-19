@@ -38,7 +38,19 @@ const STM32f103c8& STM32f103c8::enable_peripheral(uint8_t bit, clock_sel_t clk) 
 	return *this;
 }
 
-const STM32f103c8* STM32f103c8::get(uint32_t mhz, uint32_t tick_unit)
+void STM32f103c8::delay_ms(uint32_t value) const
+{
+	icore.tick_init(clock_freq(), TickUnit::ms);
+	icore.delay(value);
+}
+
+void STM32f103c8::delay_us(uint32_t value) const
+{
+	icore.tick_init(clock_freq(), TickUnit::us);
+	icore.delay(value);
+}
+
+const STM32f103c8* STM32f103c8::get(uint32_t freq_Hz)
 {
 	static STM32f103c8 mcu;
 	static bool initialized = false;
@@ -59,8 +71,8 @@ const STM32f103c8* STM32f103c8::get(uint32_t mhz, uint32_t tick_unit)
 		mcu.core.mpu0 = reinterpret_cast<mpu_t*>(0xE000ED90);
 
 		__core_ptr__ = &mcu.core;
-		::clock_init(mcu.rcc, mhz);
-		mcu.icore.init(clock_freq(), tick_unit);		
+		::clock_init(mcu.rcc, freq_Hz);
+		mcu.icore.init();		
 		initialized = true;
 	}
 	

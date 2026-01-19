@@ -9,7 +9,7 @@ void buttonDebouncer(){
 }
 
 int main() {	
-	auto s = STM32f103c8::get(48000000, 1000000);
+	auto s = STM32f103c8::get(56000000);
 	OutputPin pin13;
 	PortC::init(s);
 	PortC::mediumSpeedOutput(13, OutputType::OpenDrain, &pin13);
@@ -18,14 +18,13 @@ int main() {
 	PortA::input(7, InputType::Pulled, &pin7);
 	Button::init(&buttonDebouncer);
 	Button btn(&pin7, PullType::DOWN);
-	auto core = s->get_core();	
 	pin13.digitalWrite(true);
 	for (;;) {
 		if(btn.isDown()){
 			pin13.digitalWrite(true);
-			core->delay(100000);
+			s->delay_ms(100);
 			pin13.digitalWrite(false);
-			core->delay(100000);
+			s->delay_ms(100);
 		}
 	}
 	return 0;
