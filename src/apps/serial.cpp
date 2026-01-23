@@ -43,7 +43,7 @@ void Serial::configure(SerialConfig *config)
     }else{
         usart_cr1_set(u, SET_MASK(12));
     }
-    usart_cr1_clear(u, CLEAR_MASK(10));//Enable Parity
+    usart_cr1_clear(u, CLEAR_MASK(10));//Disable Parity
     //if(config->parity == Parity::EVEN){
     //    usart_cr1_clear(u, CLEAR_MASK(9));
     //}else{
