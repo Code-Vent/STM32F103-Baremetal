@@ -1,22 +1,24 @@
 #include"../stm32f103/mcu.h"
 #include"../apps/serial.h"
 
-constexpr uint8_t LED_ON = 0xAB;
-constexpr uint8_t LED_OFF = 0xED;
+constexpr char LED_ON = 0xAB;
+constexpr char LED_OFF = 0xED;
 
 int main() {	
-	auto s = STM32f103c8::get(56000000);
-    UartConfig config;
-    config.baud = BaudRate::BR19200;
+	auto s = STM32f103c8::get();
+    SerialConfig config;
+    config.mode = Mode::TX_ONLY;
     config.dataBits = DataBits::EIGHT;
+    config.isSynch = false;
     config.parity = Parity::EVEN;
     config.stopBit = StopBit::ONE;
-    Serial serial(Uart1{TX_ONLY}, SerialType::Asynch, &config, s);
+    Serial serial(Uart1{}, &config, s);
+    serial.begin(BaudRate::BR9600);
     for(;;){
         serial.write(LED_ON);
-        s->delay_ms(100);
+        s->delay_ms(200);
         serial.write(LED_OFF);
-        s->delay_ms(100);
+        s->delay_ms(200);
     }
     return 0;
 }

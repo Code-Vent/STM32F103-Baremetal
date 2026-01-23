@@ -3,16 +3,16 @@
 #include"../stm32f103/mcu.h"
 
 enum OutputType{
-    PushPull = CONFIG_PIN_AS_PUSH_PULL,
-    OpenDrain = CONFIG_PIN_AS_OPEN_DRAIN,
-    AlternatePP = CONFIG_PIN_AS_ALTERNATE_FUNC | CONFIG_PIN_AS_PUSH_PULL,
-    AlternateOD = CONFIG_PIN_AS_ALTERNATE_FUNC | CONFIG_PIN_AS_OPEN_DRAIN,
+    PushPull = 0,
+    OpenDrain = 1,
+    AlternatePP = 2,
+    AlternateOD = 3,
 };
 
 enum InputType{
-    Floating = CONFIG_PIN_AS_FLOATING_INPUT,
-    Pulled = CONFIG_PIN_AS_PULLED_INPUT,
-    Analog = CONFIG_PIN_AS_ANALOG_INPUT
+    Analog = 0,
+    Floating = 1,
+    Pulled = 2,
 };
 
 struct OutputPin{
@@ -32,6 +32,8 @@ struct InputPin{
     gpio_t* port;
     uint8_t num;
 };
+
+void configure(gpio_t* g, uint8_t pin_num, uint32_t bits);
 
 enum PORT{
     A, B, C
@@ -55,29 +57,37 @@ gpio_t* Port<T>::gpio_ = nullptr;
 
 template<PORT T>
 void Port<T>::fastSpeedOutput(uint8_t pin_num, OutputType t, OutputPin* pin){
-    gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_FAST_SPEED_OUTPUT);
+    //gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_FAST_SPEED_OUTPUT);
+    uint32_t config_bits = (uint32_t(t) << 2) | 3u;
+    configure(gpio_, pin_num, config_bits);
     pin->port = gpio_;
     pin->num = pin_num;
 }
 
 template<PORT T>
 void Port<T>::mediumSpeedOutput(uint8_t pin_num, OutputType t, OutputPin* pin){
-    gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_MEDIUM_SPEED_OUTPUT);
+    //gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_MEDIUM_SPEED_OUTPUT);
+    uint32_t config_bits = (uint32_t(t) << 2) | 1u;
+    configure(gpio_, pin_num, config_bits);
     pin->port = gpio_;
     pin->num = pin_num;
 }
 
 template<PORT T>
 void Port<T>::slowSpeedOutput(uint8_t pin_num, OutputType t, OutputPin* pin){
-    gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_LOW_SPEED_OUTPUT);
+    //gpio_init(gpio_, pin_num, t | CONFIG_PIN_AS_LOW_SPEED_OUTPUT);
+    uint32_t config_bits = (uint32_t(t) << 2) | 2u;
+    configure(gpio_, pin_num, config_bits);
     pin->port = gpio_;
     pin->num = pin_num;
 }
 
 template <PORT T>
-void Port<T>::input(uint8_t pin_num, InputType type, InputPin *pin)
+void Port<T>::input(uint8_t pin_num, InputType t, InputPin *pin)
 {
-    gpio_init(gpio_, pin_num, type);
+    //gpio_init(gpio_, pin_num, type);
+    uint32_t config_bits = (uint32_t(t) << 2);
+    configure(gpio_, pin_num, config_bits);
     pin->port = gpio_;
     pin->num = pin_num;
 }

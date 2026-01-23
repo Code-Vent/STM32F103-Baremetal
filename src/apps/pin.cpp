@@ -48,3 +48,20 @@ void InputPin::pullDown()
 {
     gpio_write(port, num, false);
 }
+
+void configure(gpio_t *g, uint8_t pin_num, uint32_t bits)
+{
+    uint32_t clear_mask = 0, set_mask = 0;
+    if(pin_num < 8){
+        clear_mask = ~(15u << (4 * pin_num));
+        gpio_crl_clear(g, clear_mask);
+        set_mask = bits << (4 * pin_num);
+        gpio_crl_set(g, set_mask);
+    }else{
+        pin_num -= 8;
+        clear_mask = ~(15u << (4 * pin_num));
+        gpio_crh_clear(g, clear_mask);
+        set_mask = bits << (4 * pin_num);
+        gpio_crh_set(g, set_mask);
+    }
+}

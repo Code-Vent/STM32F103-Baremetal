@@ -118,9 +118,9 @@ void clock_init(rcc_t* rcc, uint32_t freq_Hz) {
 	_SYSCLK = config.sys_clock_freq;
 	_APB1CLK = config.apb1_freq;
 	if ((rcc->CFGR & (1 << 10)) == 0) {
-        _APB1_PRESCALER = 1;
+        _APB1_PRESCALER = 0;
     } else {
-        _APB1_PRESCALER = 2;
+        _APB1_PRESCALER = 1;
     }
 }
 
@@ -131,9 +131,5 @@ uint32_t clock_freq()
 
 uint32_t clock_apb1_freq()
 {
-	return _SYSCLK;
-}
-
-uint16_t clock_apb1_prescaler(){
-	return _APB1_PRESCALER;
+	return _SYSCLK >> _APB1_PRESCALER;
 }
