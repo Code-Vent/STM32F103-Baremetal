@@ -9,15 +9,14 @@ int main() {
     OutputPin pin13;
 	PortC::init(s);
 	PortC::mediumSpeedOutput(13, OutputType::OpenDrain, &pin13);
-    UartConfig config;
-    config.mode = UartMode::RX_ONLY;
-    config.dataBits = UartDataBits::EIGHT;
-    config.enableClock = false;
-    config.parity = UartParity::EVEN;
-    config.stopBit = UartStopBit::ONE;
-    config.br = UartBaudRate::BR9600;
-    UartInterface com1;
-    Serial serial(Uart1{}, &config, &com1, s);
+    SpiConfig config;
+    config.mode = SpiMode::SLAVE;
+    config.edge = SpiClockEdge::FALLING;
+    config.format = SpiDataFormat::LSB_FIRST;
+    config.frame = SpiDataFrame::EIGHT;
+    config.br = SpiBaudRate::DIV_16;
+    SpiInterface com1;
+    Serial serial(Spi1{}, &config, &com1, s);
     char data = 0;
     pin13.digitalWrite(true);
     for(;;){

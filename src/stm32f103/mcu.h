@@ -4,6 +4,8 @@
 #include"../drivers/clock.h"
 #include"../drivers/gpio.h"
 #include"../drivers/uart.h"
+#include"../drivers/spi.h"
+#include"../drivers/i2c.h"
 #include"../libcore/types.h"
 #include"../libcore/core.h"
 #include"../def.h"
@@ -33,6 +35,11 @@ class STM32f103c8 {
 		uart_t* uart1;
 		uart_t* uart2;
 		uart_t* uart3;
+		spi_t*  spi1;
+		spi_t*  spi2;
+		spi_t*  spi3;
+		i2c_t*  i2c1;
+		i2c_t*  i2c2;
 		void call(uint32_t svc_num, uint32_t arg0, uint32_t arg1=0, uint32_t arg2=0, uint32_t arg3=0)const;
 	private:
 		STM32f103c8(const STM32f103c8&) = delete;

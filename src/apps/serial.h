@@ -1,117 +1,105 @@
 #pragma once
 #include<type_traits>
-#include"../stm32f103/mcu.h"
-#include"../apps/pin.h"
+#include"uart_defs.h"
+#include"spi_defs.h"
+#include"i2c_defs.h"
 
-#define ENABLE_TRANSMITTER  0x00000001
-#define ENABLE_RECEIVER     0x00000002
+inline uint32_t calculate_brr_value(uint32_t freq, uint32_t baud){
+    return (freq +(baud/2)) / baud;
+}
 
-enum Mode{
-    TX_RX = ENABLE_TRANSMITTER | ENABLE_RECEIVER,
-    TX_ONLY = ENABLE_TRANSMITTER,
-    RX_ONLY = ENABLE_RECEIVER
-};
-
-enum BaudRate {
-    BR9600 = 9600,
-    BR19200 = 19200,
-    BR38400 = 38400,
-    BR57600 = 57600,
-    BR115200 = 115200,
-};
-
-enum DataBits{
-    EIGHT,
-    NINE
-};
-
-enum Parity{
-    EVEN,
-    ODD
-};
-
-enum StopBit{
-    ONE, 
-    TWO
-};
-
-struct SerialConfig
-{
-    Mode mode;
-    DataBits dataBits;
-    Parity   parity;
-    StopBit stopBit;
-    bool isSynch;
-};
-
-struct Uart1{
-    typedef PortA SerialPort; 
-    static constexpr uint8_t tx_pin = 9;
-    static constexpr uint8_t rx_pin = 10;
-    static constexpr uint8_t clk_pin = 8;
-};
-
-struct Uart2{
-    typedef PortA SerialPort; 
-    static constexpr uint8_t tx_pin = 2;
-    static constexpr uint8_t rx_pin = 3;
-    static constexpr uint8_t clk_pin = 4;
-};
-
-struct Uart3{
-    typedef PortB SerialPort; 
-    static constexpr uint8_t tx_pin = 10;
-    static constexpr uint8_t rx_pin = 11;
-    static constexpr uint8_t clk_pin = 12;
-};
+void configure_uart(uart_t* u, UartConfig* config);
+void configure_spi(spi_t* s, SpiConfig* config);
+void configure_i2c(i2c_t* i, I2cConfig* config);
 
 struct Serial{
     template<class U = Uart1>
-    Serial(U _, SerialConfig* config, const STM32f103c8* s);
-    void write(char ch);
-    void write(const char* str);
-    char read();
-    bool available();
-    void begin(BaudRate br);
-private:
-    uart_t* u;
-    OutputPin tx;
-    InputPin rx;
-    OutputPin clk;
-    uint32_t freq;
-    void configure(SerialConfig* config);
+    Serial(U _, UartConfig* config, UartInterface*, const STM32f103c8* s);
+    template<class S = Spi1>
+    Serial(S _, SpiConfig* config, SpiInterface*, const STM32f103c8* s);
+    template<class I = I2c1>
+    Serial(I _, I2cConfig* config, I2cInterface*, const STM32f103c8* s);
 };
 
 template <class U>
-Serial::Serial(U _, SerialConfig *config, const STM32f103c8 *s)
+Serial::Serial(U _, UartConfig *config, UartInterface* ui, const STM32f103c8 *s)
 {
+    OutputPin out;
+    InputPin in;
     U::SerialPort::init(s);
     s->enable_peripheral(0, clock_sel_t::APB2);//Enable AF
     if(config->mode & ENABLE_TRANSMITTER){
-        U::SerialPort::fastSpeedOutput(U::tx_pin, OutputType::AlternatePP, &tx);
+        U::SerialPort::fastSpeedOutput(U::tx_pin, OutputType::AlternatePP, &out);
     }
     if(config->mode & ENABLE_RECEIVER){
-        U::SerialPort::input(U::rx_pin, InputType::Floating, &rx);
-        //rx.pullUp();
+        U::SerialPort::input(U::rx_pin, InputType::Floating, &in);
     }
-    if(config->isSynch){
-        U::SerialPort::fastSpeedOutput(U::clk_pin, OutputType::AlternatePP, &clk);       
+    if(config->enableClock){
+        U::SerialPort::fastSpeedOutput(U::clk_pin, OutputType::AlternatePP, &out);       
     }
     
     if constexpr (std::is_same_v<U, Uart1>){
-        u = s->uart1;
-        freq = clock_freq();
         s->enable_peripheral(14, clock_sel_t::APB2);
+        ui->u = s->uart1;
     }else if constexpr (std::is_same_v<U, Uart2>){
-        u = s->uart2;
-        freq = clock_apb1_freq();
         s->enable_peripheral(17, clock_sel_t::APB1);
+        ui->u = s->uart2;
     }else if constexpr (std::is_same_v<U, Uart3>){
-        u = s->uart3;
-        freq = clock_apb1_freq();
         s->enable_peripheral(18, clock_sel_t::APB1);
+        ui->u = s->uart3;
     }else{
-        
+        static_assert(false);
     }
-    configure(config);
+    configure_uart(ui->u, config);
+}
+
+template <class S>
+Serial::Serial(S _, SpiConfig *config, SpiInterface* si, const STM32f103c8 *s)
+{
+    OutputPin out;
+    InputPin in;
+    S::SerialPort::init(s);
+    s->enable_peripheral(0, clock_sel_t::APB2);//Enable AF
+    if(config->mode == SpiMode::MASTER){
+        S::SerialPort::fastSpeedOutput(S::mosi_pin, OutputType::AlternatePP, &out);
+        S::SerialPort::input(S::miso_pin, InputType::Floating, &in);
+        S::SerialPort::fastSpeedOutput(S::clk_pin, OutputType::AlternatePP, &out);
+    }else{
+        S::SerialPort::input(S::mosi_pin, InputType::Floating, &in);
+        S::SerialPort::fastSpeedOutput(S::miso_pin, OutputType::AlternatePP, &out);       
+        S::SerialPort::input(S::clk_pin, InputType::Floating, &in);
+    }
+
+    if constexpr (std::is_same_v<S, Spi1>){
+        s->enable_peripheral(12, clock_sel_t::APB2);        
+        si->s = s->spi1;
+    }else if constexpr (std::is_same_v<S, Spi2>){
+        s->enable_peripheral(14, clock_sel_t::APB1);
+        si->s = s->spi2;
+    }else if constexpr (std::is_same_v<S, Spi3>){
+        s->enable_peripheral(15, clock_sel_t::APB1);
+        si->s = s->spi3;
+    }else{
+        static_assert(false);
+    }
+    configure_spi(si->s, config);
+}
+
+template <class I>
+Serial::Serial(I _, I2cConfig* config, I2cInterface* ii, const STM32f103c8 *s)
+{
+    I::SerialPort::init(s);
+    s->enable_peripheral(0, clock_sel_t::APB2);//Enable AF
+    I::SerialPort::fastSpeedOutput(I::scl_pin, OutputType::AlternateOD, &ii->scl);
+    I::SerialPort::fastSpeedOutput(I::sda_pin, OutputType::AlternateOD, &ii->sda);
+
+    if constexpr (std::is_same_v<I, I2c1>){
+        s->enable_peripheral(21, clock_sel_t::APB1);        
+        ii->i = s->i2c1;
+    }else if constexpr (std::is_same_v<I, I2c2>){
+        s->enable_peripheral(22, clock_sel_t::APB1);
+        ii->i = s->i2c2;
+    }else{
+        static_assert(false);
+    }
 }

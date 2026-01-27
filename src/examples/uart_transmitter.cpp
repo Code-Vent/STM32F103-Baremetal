@@ -6,18 +6,19 @@ constexpr char LED_OFF = 0xED;
 
 int main() {	
 	auto s = STM32f103c8::get();
-    SerialConfig config;
-    config.mode = Mode::TX_ONLY;
-    config.dataBits = DataBits::EIGHT;
-    config.isSynch = false;
-    config.parity = Parity::EVEN;
-    config.stopBit = StopBit::ONE;
-    Serial serial(Uart1{}, &config, s);
-    serial.begin(BaudRate::BR9600);
+    UartConfig config;
+    config.mode = UartMode::TX_ONLY;
+    config.dataBits = UartDataBits::EIGHT;
+    config.enableClock = false;
+    config.parity = UartParity::EVEN;
+    config.stopBit = UartStopBit::ONE;
+    config.br = UartBaudRate::BR9600;
+    UartInterface com1;
+    Serial serial(Uart1{}, &config, &com1, s);
     for(;;){
-        serial.write(LED_ON);
+        com1.write(LED_ON);
         s->delay_ms(200);
-        serial.write(LED_OFF);
+        com1.write(LED_OFF);
         s->delay_ms(200);
     }
     return 0;
