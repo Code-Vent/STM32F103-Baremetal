@@ -8,12 +8,12 @@ int main() {
 	auto s = STM32f103c8::get();
     SpiConfig config;
     config.mode = SpiMode::MASTER;
-    config.edge = SpiClockEdge::FALLING;
+    config.edge = SpiClockEdge::FALLING_1;
     config.format = SpiDataFormat::LSB_FIRST;
     config.frame = SpiDataFrame::EIGHT;
     config.br = SpiBaudRate::DIV_16;
     SpiInterface com1;
-    Serial serial(Spi1{}, &config, &com1, s);
+    Serial serial(Spi2{}, &config, &com1, s);
     for(;;){
         com1.write(LED_ON);
         s->delay_ms(200);

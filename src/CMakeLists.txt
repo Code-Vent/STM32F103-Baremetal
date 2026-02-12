@@ -10,6 +10,8 @@ set(EXAMPLES
     uart_receiver
     spi_master
     spi_slave
+    i2c_master
+    i2c_slave
 )
 
 foreach(example ${EXAMPLES})

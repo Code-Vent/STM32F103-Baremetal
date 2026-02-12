@@ -9,8 +9,10 @@ enum SpiMode{
 };
 
 enum SpiClockEdge{
-    RISING,
-    FALLING
+    RISING_0,
+    FALLING_1,
+    FALLING_2,
+    RISING_3,    
 };
 
 enum class SpiDataFrame{

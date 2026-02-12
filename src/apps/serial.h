@@ -92,7 +92,7 @@ Serial::Serial(I _, I2cConfig* config, I2cInterface* ii, const STM32f103c8 *s)
     s->enable_peripheral(0, clock_sel_t::APB2);//Enable AF
     I::SerialPort::fastSpeedOutput(I::scl_pin, OutputType::AlternateOD, &ii->scl);
     I::SerialPort::fastSpeedOutput(I::sda_pin, OutputType::AlternateOD, &ii->sda);
-
+    
     if constexpr (std::is_same_v<I, I2c1>){
         s->enable_peripheral(21, clock_sel_t::APB1);        
         ii->i = s->i2c1;
@@ -102,4 +102,9 @@ Serial::Serial(I _, I2cConfig* config, I2cInterface* ii, const STM32f103c8 *s)
     }else{
         static_assert(false);
     }
+    //ii->sda.digitalWrite(false);
+    //ii->scl.digitalWrite(false);
+    ii->addr7_mode = (config->addr_fmt == I2cAddressFormat::SEVEN);
+    configure_i2c(ii->i, config);
+    ii->is_master = false;
 }

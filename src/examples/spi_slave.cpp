@@ -11,7 +11,7 @@ int main() {
 	PortC::mediumSpeedOutput(13, OutputType::OpenDrain, &pin13);
     SpiConfig config;
     config.mode = SpiMode::SLAVE;
-    config.edge = SpiClockEdge::FALLING;
+    config.edge = SpiClockEdge::FALLING_1;
     config.format = SpiDataFormat::LSB_FIRST;
     config.frame = SpiDataFrame::EIGHT;
     config.br = SpiBaudRate::DIV_16;
