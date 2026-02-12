@@ -7,7 +7,7 @@ void SysTick_Handler() {
 }
 
 
-void SVC_Handler() {
+void SVCall_Handler() {
     SvCallParams s = __core_ptr__->svc_params;
     if (s.num < MAX_SYS_FUNC && __core_ptr__->kernel[s.num]) {
         __core_ptr__->kernel[s.num](s.args);
