@@ -82,14 +82,11 @@ void Reset_Handler(){
     uint8_t* sbss = reinterpret_cast<uint8_t*>(&_sbss);
     uint8_t* ebss = reinterpret_cast<uint8_t*>(&_ebss);
     while (sdata < edata) {
-        *sdata = *sidata;
-        sdata++;
-        sidata++;
+        *sdata++ = *sidata++;
     }
 
     while (sbss < ebss) {
-        *sbss = 0;
-        sbss++;
+        *sbss++ = 0;
     }
     main();
 }
