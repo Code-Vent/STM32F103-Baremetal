@@ -116,9 +116,9 @@ extern "C" void Default_Handler(){
     while(1) {}
 }
 
-typedef void (*fn_ptr)();
+typedef void (*Handler)();
 
-fn_ptr VECTOR_TABLE[] __attribute__((section(".isr_vector"))) = {
+Handler VECTOR_TABLE[] __attribute__((section(".isr_vector"))) = {
     &Reset_Handler,
     &NMI_Handler,
     &Hardfault_Handler,
