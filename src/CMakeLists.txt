@@ -18,14 +18,16 @@ foreach(example ${EXAMPLES})
     add_executable(
         ${example}
         "examples/${example}.cpp"
-        ${CMAKE_CURRENT_SOURCE_DIR}/apps/pin.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/apps/button.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/apps/serial.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/clock.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/gpio.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/uart.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/spi.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/i2c.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/pin.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/button.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/serial.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/drivers/timer.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/clock.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/gpio.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/uart.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/spi.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/i2c.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/registers/tim.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/stm32f103/mcu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/libcore/core.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/libcore/handlers.c

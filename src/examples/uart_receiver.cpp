@@ -1,5 +1,5 @@
 #include"../stm32f103/mcu.h"
-#include"../apps/serial.h"
+#include"../drivers/serial.h"
 
 constexpr char LED_ON = 0xAB;
 constexpr char LED_OFF = 0xED;

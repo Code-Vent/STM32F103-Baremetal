@@ -68,6 +68,11 @@ const STM32f103c8* STM32f103c8::get(uint32_t freq_Hz)
 		mcu.spi3 = reinterpret_cast<spi_t*>(0x40003C00);
 		mcu.i2c1 = reinterpret_cast<i2c_t*>(0x40005400);
 		mcu.i2c2 = reinterpret_cast<i2c_t*>(0x40005800);
+		mcu.tim1 = reinterpret_cast<tim_t*>(0x40012C00);
+		mcu.tim2 = reinterpret_cast<tim_t*>(0x40000000);
+		mcu.tim3 = reinterpret_cast<tim_t*>(0x40000400);
+		mcu.tim4 = reinterpret_cast<tim_t*>(0x40000800);
+		mcu.tim5 = reinterpret_cast<tim_t*>(0x40000C00);
 
 		mcu.core.timer0 = reinterpret_cast<timer_t*>(0xE000E010);
 		mcu.core.nvic0 = reinterpret_cast<nvic_t*>(0xE000E100);

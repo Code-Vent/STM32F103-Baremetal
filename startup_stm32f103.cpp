@@ -73,7 +73,10 @@ extern uint32_t _sdata;
 extern uint32_t _edata;
 extern uint32_t _sbss;
 extern uint32_t _ebss;
+extern uint32_t _sctor;
+extern uint32_t _ector;
 
+using Fn = void(*)();
 
 void Reset_Handler(){
     uint8_t* sidata = reinterpret_cast<uint8_t*>(&_sidata);
@@ -81,12 +84,19 @@ void Reset_Handler(){
     uint8_t* edata = reinterpret_cast<uint8_t*>(&_edata);
     uint8_t* sbss = reinterpret_cast<uint8_t*>(&_sbss);
     uint8_t* ebss = reinterpret_cast<uint8_t*>(&_ebss);
+    uint32_t* sctor = reinterpret_cast<uint32_t*>(&_sctor);
+    uint32_t* ector = reinterpret_cast<uint32_t*>(&_ector);
+
     while (sdata < edata) {
         *sdata++ = *sidata++;
     }
 
     while (sbss < ebss) {
         *sbss++ = 0;
+    }
+
+    while (sctor < ector) {
+        reinterpret_cast<Fn>(*sctor++)();
     }
     main();
 }

@@ -42,6 +42,16 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
+  .ctor :
+  {
+    . = ALIGN(4);
+    _sctor = .;
+    KEEP(*(SORT(.init_array.*)))
+    KEEP(*(.init_array))
+    . = ALIGN(4);
+    _ector = .;
+  } >FLASH
+
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
 
